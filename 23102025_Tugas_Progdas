@@ -1,0 +1,65 @@
+#include <iostream>
+#include <cmath>
+#include <iomanip>
+using namespace std;
+const double PI = 3.1416;
+
+// a. Fungsi distance
+double distance(double x1, double y1, double x2, double y2) {
+    double dx = x2 - x1;
+    double dy = y2 - y1;
+    return sqrt(pow(dx, 2) + pow(dy, 2));
+}
+// b. Fungsi radius
+double radius(double x1, double y1, double x2, double y2) {
+    return distance(x1, y1, x2, y2);
+}
+// c. Fungsi circumference
+double circumference(double r) {
+    return 2 * PI * r;
+}
+// d. Fungsi area
+double area(double r) {
+    return PI * pow(r, 2);
+}
+int main() {
+    double x_center, y_center, x_point, y_point;
+    double r, diameter, C, A;
+    cout << "===== PROGRAM PERHITUNGAN LINGKARAN =====" << endl;
+    cout << "Asumsi nilai PI = " << PI << endl;
+    
+    // Input Data
+    cout << "\nMasukkan koordinat pusat lingkaran (x1 y1): ";
+    if (!(cin >> x_center >> y_center)) {
+        cerr << "Input tidak valid. Harap masukkan angka." << endl;
+        return 1;
+    }
+    cout << "Masukkan koordinat titik pada lingkaran (x2 y2): ";
+    if (!(cin >> x_point >> y_point)) {
+        cerr << "Input tidak valid. Harap masukkan angka." << endl;
+        return 1;
+    }
+    // Perhitungan Jari-Jari
+    r = radius(x_center, y_center, x_point, y_point);
+    // Perhitungan Properti Lain
+    diameter = 2 * r;
+    C = circumference(r);
+    A = area(r);
+    // Output Hasil
+    cout << fixed << setprecision(4); 
+    cout << "\n--- HASIL PERHITUNGAN ---" << endl;
+    
+    if (r < 0.0001) { 
+        cout << "Pusat dan titik pada lingkaran hampir sama. Jari-jari terlalu kecil atau nol." << endl;
+    } else {
+        cout << "Pusat Lingkaran: (" << x_center << ", " << y_center << ")" << endl;
+        cout << "Titik pada Lingkaran: (" << x_point << ", " << y_point << ")" << endl;
+        cout << "-----------------------------------" << endl;
+        cout << "A. Jari-jari (r):       " << r << endl;
+        cout << "B. Diameter (d):        " << diameter << endl;
+        cout << "C. Keliling (C):        " << C << endl;
+        cout << "D. Luas (A):            " << A << endl;
+        cout << "-----------------------------------" << endl;
+    }
+    return 0;
+}
