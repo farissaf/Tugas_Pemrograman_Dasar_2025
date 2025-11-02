@@ -1,0 +1,120 @@
+#include <iostream>
+#include <fstream>
+#include <iomanip>
+#include <string>
+using namespace std;
+
+const int NUM_STUDENTS = 20;
+
+struct studentType {
+    string studentFName;
+    string studentLName;
+    int testScore;
+    char grade;
+};
+
+// a. baca data dari file input
+void getData(studentType list[], int size, ifstream& inFile) {
+    for (int i = 0; i < size; i++) {
+        // urutan di file: firstName lastName score
+        inFile >> list[i].studentFName
+               >> list[i].studentLName
+               >> list[i].testScore;
+    }
+}
+
+// b. isi grade sesuai skor
+void assignGrade(studentType list[], int size) {
+    for (int i = 0; i < size; i++) {
+        int score = list[i].testScore;
+        if (score >= 90)
+            list[i].grade = 'A';
+        else if (score >= 80)
+            list[i].grade = 'B';
+        else if (score >= 70)
+            list[i].grade = 'C';
+        else if (score >= 60)
+            list[i].grade = 'D';
+        else
+            list[i].grade = 'F';
+    }
+}
+
+// c. cari nilai tertinggi
+int findHighest(const studentType list[], int size) {
+    int maxScore = list[0].testScore;
+    for (int i = 1; i < size; i++) {
+        if (list[i].testScore > maxScore)
+            maxScore = list[i].testScore;
+    }
+    return maxScore;
+}
+
+// d1. cetak semua mahasiswa ke file output
+void printAll(const studentType list[], int size, ofstream& outFile) {
+    outFile << left << setw(15) << "Last Name"
+            << "  " << setw(12) << "First Name"
+            << "  " << setw(5)  << "Score"
+            << "  " << "Grade" << endl;
+    outFile << "-------------------------------------------------\n";
+
+    for (int i = 0; i < size; i++) {
+        // format yang diminta: last name, spasi, first name
+        outFile << left << setw(15) << list[i].studentLName << "  "
+                << setw(12) << list[i].studentFName << "  "
+                << setw(5)  << list[i].testScore << "  "
+                << list[i].grade << endl;
+    }
+}
+
+// d2. cetak nama yang punya nilai tertinggi
+void printHighest(const studentType list[], int size, int highestScore,
+                  ofstream& outFile)
+{
+    outFile << "\nHighest test score = " << highestScore << endl;
+    outFile << "Student(s) having the highest score:\n";
+
+    for (int i = 0; i < size; i++) {
+        if (list[i].testScore == highestScore) {
+            // tetap pakai format: last name, first name
+            outFile << "  " << list[i].studentLName << ", "
+                    << list[i].studentFName << endl;
+        }
+    }
+}
+
+int main() {
+    ifstream inFile("infile.txt");
+    ofstream outFile("outfile.txt");
+
+    if (!inFile) {
+        cout << "Tidak bisa membuka infile.txt\n";
+        return 1;
+    }
+    if (!outFile) {
+        cout << "Tidak bisa membuat outfile.txt\n";
+        return 1;
+    }
+
+    studentType classList[NUM_STUDENTS];
+
+    // 1. baca dari file
+    getData(classList, NUM_STUDENTS, inFile);
+
+    // 2. tentukan grade
+    assignGrade(classList, NUM_STUDENTS);
+
+    // 3. cari nilai tertinggi
+    int highest = findHighest(classList, NUM_STUDENTS);
+
+    // 4. cetak semua ke file output
+    printAll(classList, NUM_STUDENTS, outFile);
+
+    // 5. cetak yang nilainya paling tinggi
+    printHighest(classList, NUM_STUDENTS, highest, outFile);
+
+    inFile.close();
+    outFile.close();
+
+    return 0;
+}
