@@ -1,0 +1,26 @@
+Last Name        First Name    Score  Grade
+-------------------------------------------------
+Anindya          Farah         95     A
+Putra            Reza          88     B
+Rahma            Nadia         76     C
+Santoso          Budi          90     A
+Lestari          Sinta         90     A
+Hidayat          Rizky         82     B
+Kartika          Dewi          67     D
+Saputra          Andi          54     F
+Permata          Lisa          78     C
+Aditya           Yoga          61     D
+Ramadhan         Taufik        85     B
+Amalia           Rani          93     A
+Wulandari        Eka           58     F
+Nugroho          Arif          74     C
+Mariana          Vina          80     B
+Gunawan          Hendra        96     A
+Rosalia          Tia           87     B
+Maulana          Fajar         91     A
+Anggraini        Lina          65     D
+Wijaya           Bayu          70     C
+
+Highest test score = 96
+Student(s) having the highest score:
+  Gunawan, Hendra
