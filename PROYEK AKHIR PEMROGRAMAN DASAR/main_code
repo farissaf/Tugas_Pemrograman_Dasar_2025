@@ -1,1 +1,481 @@
+#include <iostream>
+#include <vector>
+#include <string>
+using namespace std;
+
+/* ============================================================
+   CLASS MotorRenter
+   ============================================================ */
+class MotorRenter {
+private:
+    int idRenter;
+    string nameRenter;
+    string email;
+    string password;
+
+public:
+    MotorRenter(int id, string name, string email, string password)
+        : idRenter(id), nameRenter(name), email(email), password(password) {}
+
+    bool login(string e, string p) {
+        return (email == e && password == p);
+    }
+
+    void displayInfo() const {
+        cout << "Renter: " << nameRenter << " | Email: " << email << endl;
+    }
+
+    int getId() const { return idRenter; }
+    string getName() const { return nameRenter; }
+};
+
+/* ============================================================
+   CLASS Motor
+   ============================================================ */
+class Motor {
+private:
+    string motorBrand;
+    string motorType;
+    string plateNumber;
+    double rentalPrice;
+    string bookingStatus;
+
+public:
+    Motor(string brand, string type, string plate, double price)
+        : motorBrand(brand), motorType(type), plateNumber(plate),
+          rentalPrice(price), bookingStatus("available") {}
+
+    void displayMotor() const {
+        cout << motorBrand << " " << motorType
+             << " | Plate: " << plateNumber
+             << " | Price: Rp" << rentalPrice
+             << " | Status: " << bookingStatus << endl;
+    }
+
+    void setMotorStatus(string status) { bookingStatus = status; }
+
+    void updateMotorInfo(string brand, string type) {
+        motorBrand = brand;
+        motorType = type;
+    }
+
+    string getBrand() const { return motorBrand; }
+    string getType() const { return motorType; }
+    string getPlate() const { return plateNumber; }
+    double getPrice() const { return rentalPrice; }
+    string getStatus() const { return bookingStatus; }
+};
+
+/* ============================================================
+   CLASS Booking
+   ============================================================ */
+class Booking {
+private:
+    int bookingId;
+    string startDate;
+    string endDate;
+    Motor motor;
+    MotorRenter renter;
+
+public:
+    Booking(int id, Motor m, MotorRenter r, string start, string end)
+        : bookingId(id), motor(m), renter(r), startDate(start), endDate(end) {}
+
+    void displayBooking() const {
+        cout << "Booking ID: " << bookingId << endl;
+        renter.displayInfo();
+        motor.displayMotor();
+        cout << "From: " << startDate << " To: " << endDate << endl;
+    }
+
+    void cancelBooking() {
+        cout << "Booking canceled.\n";
+    }
+
+    int getId() const { return bookingId; }
+    Motor getMotor() const { return motor; }
+    MotorRenter getRenter() const { return renter; }
+};
+
+/* ============================================================
+   CLASS Payment
+   ============================================================ */
+class Payment {
+private:
+    Booking booking;
+    string method;
+    string paymentDate;
+    int paymentId;
+    double price;
+
+public:
+    Payment(int id, Booking b, double p, string date, string method)
+        : paymentId(id), booking(b), price(p),
+          paymentDate(date), method(method) {}
+
+    void processPayment() const {
+        cout << "--- Payment Receipt ---\n";
+        cout << "Payment ID: " << paymentId << endl;
+        cout << "Method: " << method << endl;
+        booking.displayBooking();
+        cout << "Total: Rp" << price << endl;
+        cout << "Payment Date: " << paymentDate << endl;
+    }
+
+    void displayPayment() const {
+        cout << "Payment ID: " << paymentId
+             << " | Amount: Rp" << price
+             << " | Method: " << method
+             << " | Date: " << paymentDate << endl;
+    }
+};
+
+/* ============================================================
+   CLASS Invoice
+   ============================================================ */
+class Invoice {
+private:
+    Booking booking;
+    int invoiceId;
+    string issueDate;
+    double totalPrice;
+
+public:
+    Invoice(int id, Booking b, string date, double price)
+        : invoiceId(id), booking(b), issueDate(date), totalPrice(price) {}
+
+    void generateInvoice() const {
+        cout << "\n--- Invoice ---\n";
+        cout << "Invoice ID: " << invoiceId << endl;
+        booking.displayBooking();
+        cout << "Issue Date: " << issueDate << endl;
+        cout << "Total Price: Rp" << totalPrice << endl;
+        cout << "----------------\n";
+    }
+};
+
+/* ============================================================
+   CLASS Employee
+   ============================================================ */
+class Employee {
+private:
+    int id;
+    string name;
+    string role;
+    bool loggedIn;
+
+public:
+    Employee(int id, string name, string role)
+        : id(id), name(name), role(role), loggedIn(false) {}
+
+    int getId() const { return id; }
+    string getName()  const { return name; }
+
+    void login() {
+        loggedIn = true;
+        cout << "Employee " << name << " logged in.\n";
+    }
+
+    void manageMotorData(vector<Motor>& motors) {
+        int choice;
+        do {
+            cout << "\n=== Motor Management ===\n";
+            cout << "1. Add Motor\n";
+            cout << "2. Delete Motor\n";
+            cout << "3. View All Motors\n";
+            cout << "0. Back\n";
+            cout << "Choice: ";
+            cin >> choice;
+            cin.ignore();
+
+            if (choice == 1) {
+                string brand, type, plate;
+                double price;
+
+                cout << "Brand: "; getline(cin, brand);
+                cout << "Type: "; getline(cin, type);
+                cout << "Plate: "; getline(cin, plate);
+                cout << "Price: "; cin >> price; cin.ignore();
+
+                motors.push_back(Motor(brand, type, plate, price));
+                cout << "Motor added successfully.\n";
+            }
+            else if (choice == 2) {
+                for (size_t i=0; i<motors.size(); i++){
+                    cout << i+1 << ". "; motors[i].displayMotor();
+                }
+                int x;
+                cout << "Delete number: ";
+                cin >> x; cin.ignore();
+                if (x >= 1 && x <= motors.size()) {
+                    motors.erase(motors.begin() + (x-1));
+                    cout << "Deleted.\n";
+                }
+            }
+            else if (choice == 3) {
+                for (size_t i=0; i<motors.size(); i++){
+                    cout << i+1 << ". ";
+                    motors[i].displayMotor();
+                }
+            }
+        } while (choice != 0);
+    }
+
+    void generateInvoice() {
+        if (!loggedIn) {
+            cout << "Please login first.\n";
+            return;
+        }
+        cout << "Generating invoice...\n";
+    }
+};
+
+/* ============================================================
+   CLASS Manager
+   ============================================================ */
+class Manager {
+private:
+    int id;
+    string name;
+
+public:
+    Manager(int id, string name)
+        : id(id), name(name) {}
+
+    void viewTransactionReport(
+        const vector<Invoice>& invoices,
+        const vector<Payment>& payments,
+        const vector<Booking>& bookings
+    ) const {
+        cout << "\n=== Transaction Report ===\n";
+
+        cout << "\n-- Bookings --\n";
+        for (auto &b : bookings) b.displayBooking();
+
+        cout << "\n-- Payments --\n";
+        for (auto &p : payments) p.displayPayment();
+
+        cout << "\n-- Invoices --\n";
+        for (auto &i : invoices) i.generateInvoice();
+    }
+
+    int getId() const { return id; }
+    string getName() const { return name; }
+};
+
+/* ============================================================
+   MAIN PROGRAM
+   ============================================================ */
+int main() {
+    vector<Motor> motors = {
+        Motor("Honda", "Beat", "AB1234XY", 50000),
+        Motor("Yamaha", "Mio", "AB5678CD", 55000),
+        Motor("Suzuki", "Nex", "AB4321EF", 52000)
+    };
+
+    vector<MotorRenter> renters;
+    vector<Employee> employees = {
+        Employee(101, "Budi", "Admin"),
+        Employee(102, "Sari", "Staff")
+    };
+
+    vector<Manager> managers = {
+        Manager(9001, "Agus"),
+        Manager(9002, "Ratna")
+    };
+
+    vector<Booking> bookings;
+    vector<Payment> payments;
+    vector<Invoice> invoices;
+
+    MotorRenter* loggedRenter = nullptr;
+    Employee* loggedEmployee = nullptr;
+
+    int menu;
+
+    do {
+        cout << "\n=== APLIKASI SEWA MOTOR ===\n";
+        cout << "1. Registrasi\n";
+        cout << "2. Login\n";
+        cout << "0. Exit\n";
+        cout << "Choice: ";
+        cin >> menu; cin.ignore();
+
+        /* --------------------- REGISTER --------------------- */
+        if (menu == 1) {
+            int id;
+            string name, email, pass;
+            cout << "ID: "; cin >> id; cin.ignore();
+            cout << "Name: "; getline(cin, name);
+            cout << "Email: "; getline(cin, email);
+            cout << "Password: "; getline(cin, pass);
+
+            renters.push_back(MotorRenter(id, name, email, pass));
+            cout << "Registration successful.\n";
+        }
+
+        /* --------------------- LOGIN ------------------------ */
+        else if (menu == 2) {
+            cout << "\nLogin as:\n1. Renter\n2. Employee\n3. Manager\nChoice: ";
+            int type; cin >> type; cin.ignore();
+
+            /* RENTER LOGIN */
+            if (type == 1) {
+                string e, p;
+                cout << "Email: "; getline(cin, e);
+                cout << "Password: "; getline(cin, p);
+
+                bool found = false;
+                for (auto &r : renters) {
+                    if (r.login(e, p)) {
+                        loggedRenter = &r;
+                        found = true;
+                        cout << "Login successful.\n";
+                        break;
+                    }
+                }
+                if (!found) continue;
+
+                /* USER MENU */
+                int opt;
+                do {
+                    cout << "\n=== Renter Menu ===\n";
+                    cout << "1. View Available Motors\n";
+                    cout << "2. Search Motor by Brand\n";
+                    cout << "0. Logout\n";
+                    cout << "Choice: ";
+                    cin >> opt; cin.ignore();
+
+                    vector<Motor*> listMotor;
+
+                    if (opt == 1) {
+                        for (auto &m : motors) {
+                            if (m.getStatus() == "available") {
+                                m.displayMotor();
+                                listMotor.push_back(&m);
+                            }
+                        }
+                    }
+                    else if (opt == 2) {
+                        string brand;
+                        cout << "Enter brand: ";
+                        getline(cin, brand);
+
+                        for (auto &m : motors) {
+                            if (m.getStatus()=="available" && m.getBrand()==brand) {
+                                m.displayMotor();
+                                listMotor.push_back(&m);
+                            }
+                        }
+                    }
+
+                    if (!listMotor.empty()) {
+                        char choose;
+                        cout << "Book one? (y/n): ";
+                        cin >> choose; cin.ignore();
+                        if (choose == 'y') {
+                            int pick;
+                            cout << "Enter number (1-" << listMotor.size() << "): ";
+                            cin >> pick; cin.ignore();
+                            if (pick < 1 || pick > listMotor.size()) continue;
+
+                            Motor &selected = *listMotor[pick-1];
+                            selected.setMotorStatus("booked");
+
+                            string s, e;
+                            cout << "Start date (yyyy-mm-dd): ";
+                            getline(cin, s);
+                            cout << "End date (yyyy-mm-dd): ";
+                            getline(cin, e);
+
+                            Booking b(101 + bookings.size(), selected, *loggedRenter, s, e);
+                            bookings.push_back(b);
+
+                            cout << "\nContinue to payment? (y/n): ";
+                            cin >> choose; cin.ignore();
+                            if (choose == 'y') {
+                                string date, method;
+                                cout << "Payment method (Cash / Transfer): ";
+                                getline(cin, method);
+                                cout << "Payment date: ";
+                                getline(cin, date);
+
+                                Payment p(201 + payments.size(), b, selected.getPrice(), date, method);
+                                p.processPayment();
+                                payments.push_back(p);
+
+                                string invoiceDate;
+                                cout << "Invoice date: ";
+                                getline(cin, invoiceDate);
+
+                                Invoice inv(301 + invoices.size(), b, invoiceDate, selected.getPrice());
+                                inv.generateInvoice();
+                                invoices.push_back(inv);
+                            }
+                        }
+                    }
+
+                } while (opt != 0);
+
+                loggedRenter = nullptr;
+            }
+
+            /* EMPLOYEE LOGIN */
+            else if (type == 2) {
+                int id;
+                string name;
+                cout << "Employee ID: "; cin >> id; cin.ignore();
+                cout << "Name: "; getline(cin, name);
+
+                bool ok = false;
+                for (auto &emp : employees) {
+                    if (emp.getId()==id && emp.getName()==name) {
+                        loggedEmployee = &emp;
+                        emp.login();
+                        ok = true;
+                        break;
+                    }
+                }
+                if (!ok) continue;
+
+                int opt;
+                do {
+                    cout << "\n=== Employee Menu ===\n";
+                    cout << "1. Manage Motor Data\n";
+                    cout << "2. Generate Invoice\n";
+                    cout << "0. Logout\nChoice: ";
+                    cin >> opt; cin.ignore();
+
+                    if (opt == 1)
+                        loggedEmployee->manageMotorData(motors);
+
+                } while (opt != 0);
+
+                loggedEmployee = nullptr;
+            }
+
+            /* MANAGER LOGIN */
+            else if (type == 3) {
+                int id;
+                string name;
+                cout << "Manager ID: "; cin >> id; cin.ignore();
+                cout << "Name: "; getline(cin, name);
+
+                bool ok = false;
+                for (auto &m : managers) {
+                    if (m.getId()==id && m.getName()==name) {
+                        m.viewTransactionReport(invoices, payments, bookings);
+                        ok = true;
+                        break;
+                    }
+                }
+                if (!ok) cout << "Login failed.\n";
+            }
+        }
+
+    } while (menu != 0);
+
+    cout << "Program selesai.\n";
+    return 0;
+}
 
